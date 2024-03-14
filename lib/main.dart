@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'models/user_location.dart';
 import 'components/weatherScreen/weather_screen.dart';
 import 'models/weather_forecast.dart';
+import 'components/utility/styles.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const sqlCreateDatabase = 'assets/sql/create.sql';
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
         builder: (_, mode, __) {
           return MaterialApp(
             title: 'CS 492 Weather App',
-            theme: ThemeData.light(),
+            theme: mainTheme,
             darkTheme: ThemeData.dark(),
             themeMode: mode,
             home: MyHomePage(title: "CS492 Weather App", notifier: _notifier),
@@ -143,7 +144,6 @@ class _MyHomePageState extends State<MyHomePage> {
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(widget.title),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
