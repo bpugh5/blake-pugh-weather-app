@@ -1,3 +1,4 @@
+import 'package:cs492_weather_app/components/widgets/active_weather_card.dart';
 import 'package:cs492_weather_app/components/widgets/daily_forecasts.dart';
 import 'package:cs492_weather_app/components/widgets/hourly_forecasts.dart';
 import 'package:cs492_weather_app/models/weather_forecast.dart';
@@ -50,22 +51,17 @@ class ForecastWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Card(
-          child: Column(
-            children: [
-              LocationTextWidget(location: location),
-              TemperatureWidget(forecasts: forecastsHourly),
-              DescriptionWidget(forecasts: forecastsHourly),
-            ],
-          ),
-        ),
-        const Text("Hourly Forecast: "),
-        HourlyForecastList(forecasts: forecastsHourly),
-        const Text("Daily Forecast: "),
-        DailyForecastList(forecasts: forecasts)
-      ],
+    return Container(
+      decoration: const BoxDecoration(gradient: LinearGradient(begin: Alignment.bottomLeft, end: Alignment.topRight, colors: [Colors.lightBlue, Colors.yellow])),
+      child: Column(
+        children: [
+          ActiveWeatherCard(location: location, forecastsHourly: forecastsHourly),
+          const Text("Hourly Forecast: "),
+          HourlyForecastList(forecasts: forecastsHourly),
+          const Text("Daily Forecast: "),
+          DailyForecastList(forecasts: forecasts)
+        ],
+      ),
     );
   }
 }
