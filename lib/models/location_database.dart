@@ -31,6 +31,7 @@ class LocationDatabase {
     await _db.close();
   }
 
+  // This calls the Get All query from the database to return each location
   Future<List<UserLocation>> getLocations() async {
     String query = await rootBundle.loadString(sqlGetAllPath);
     List<Map> locationEntries = await _db.rawQuery(query);
@@ -41,6 +42,7 @@ class LocationDatabase {
     return locations;
   }
 
+  // This inserts a location into the database
   void insertLocation(UserLocation location) async {
     await _db.transaction((txn) async {
       String query = await rootBundle.loadString(sqlInsertPath);

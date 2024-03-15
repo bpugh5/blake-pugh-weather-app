@@ -16,7 +16,7 @@ final mainColorScheme = ColorScheme(
   onSurface: Colors.black,
 );
 
-final mainTheme = ThemeData(
+final customLightTheme = ThemeData(
   appBarTheme: AppBarTheme(
     backgroundColor: mainColorScheme.primary
   ),

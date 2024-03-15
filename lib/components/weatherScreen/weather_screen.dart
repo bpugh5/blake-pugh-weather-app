@@ -1,3 +1,5 @@
+import 'package:cs492_weather_app/components/widgets/daily_forecasts.dart';
+import 'package:cs492_weather_app/components/widgets/hourly_forecasts.dart';
 import 'package:cs492_weather_app/models/weather_forecast.dart';
 import '../../models/user_location.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +29,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
         ? ForecastWidget(
             context: context,
             location: widget.getLocation(),
-            forecasts: widget.getForecastsHourly())
+            forecastsHourly: widget.getForecastsHourly(),
+            forecasts: widget.getForecasts())
         : LocationWidget(widget: widget));
   }
 }
@@ -35,21 +38,33 @@ class _WeatherScreenState extends State<WeatherScreen> {
 class ForecastWidget extends StatelessWidget {
   final UserLocation location;
   final List<WeatherForecast> forecasts;
+  final List<WeatherForecast> forecastsHourly;
   final BuildContext context;
 
   const ForecastWidget(
       {super.key,
       required this.context,
       required this.location,
+      required this.forecastsHourly,
       required this.forecasts});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        LocationTextWidget(location: location),
-        TemperatureWidget(forecasts: forecasts),
-        DescriptionWidget(forecasts: forecasts)
+        Card(
+          child: Column(
+            children: [
+              LocationTextWidget(location: location),
+              TemperatureWidget(forecasts: forecastsHourly),
+              DescriptionWidget(forecasts: forecastsHourly),
+            ],
+          ),
+        ),
+        const Text("Hourly Forecast: "),
+        HourlyForecastList(forecasts: forecastsHourly),
+        const Text("Daily Forecast: "),
+        DailyForecastList(forecasts: forecasts)
       ],
     );
   }
@@ -131,13 +146,15 @@ class LocationWidget extends StatelessWidget {
       height: 400,
       child: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text("Requires a location to begin"),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+                child: Text(
+                    "Please enter a valid location, or use your current location to get a forecast!",
+                    style: Theme.of(context).textTheme.bodyLarge)),
           ),
           Location(
-              setLocation: widget.setLocation,
-              getLocation: widget.getLocation),
+              setLocation: widget.setLocation, getLocation: widget.getLocation),
         ],
       ),
     );
