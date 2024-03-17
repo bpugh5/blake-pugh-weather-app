@@ -52,10 +52,15 @@ class ForecastWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(gradient: LinearGradient(begin: Alignment.bottomLeft, end: Alignment.topRight, colors: [Colors.lightBlue, Colors.yellow])),
+      decoration: const BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.bottomLeft,
+              end: Alignment.topRight,
+              colors: [Colors.lightBlue, Colors.yellow])),
       child: Column(
         children: [
-          ActiveWeatherCard(location: location, forecastsHourly: forecastsHourly),
+          ActiveWeatherCard(
+              location: location, forecastsHourly: forecastsHourly),
           const Text("Hourly Forecast: "),
           HourlyForecastList(forecasts: forecastsHourly),
           const Text("Daily Forecast: "),
@@ -99,10 +104,8 @@ class TemperatureWidget extends StatelessWidget {
     return SizedBox(
       width: 500,
       height: 60,
-      child: Center(
-        child: Text('${forecasts.elementAt(0).temperature}º',
-            style: Theme.of(context).textTheme.displayLarge),
-      ),
+      child: Text('${forecasts.elementAt(0).temperature}º',
+          style: Theme.of(context).textTheme.displayLarge),
     );
   }
 }
@@ -139,7 +142,6 @@ class LocationWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 400,
       child: Column(
         children: [
           Padding(

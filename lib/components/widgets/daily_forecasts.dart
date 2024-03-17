@@ -4,9 +4,16 @@ import 'package:intl/intl.dart';
 
 import 'package:cs492_weather_app/models/weather_forecast.dart';
 
-class DailyForecastList extends StatelessWidget {
+class DailyForecastList extends StatefulWidget {
   const DailyForecastList({super.key, required this.forecasts});
   final List<WeatherForecast> forecasts;
+
+  @override
+  State<DailyForecastList> createState() => _DailyForecastListState();
+}
+
+class _DailyForecastListState extends State<DailyForecastList> {
+  final int activeForecast = -1;
 
   @override
   Widget build(BuildContext context) {
@@ -14,10 +21,10 @@ class DailyForecastList extends StatelessWidget {
       width: 400,
       height: 300,
       child: ListView.builder(
-          itemCount: forecasts.length,
+          itemCount: widget.forecasts.length,
           itemBuilder: (BuildContext context, int index) {
             DateTime forecastTime =
-                DateTime.parse(forecasts[index].startTime).toLocal();
+                DateTime.parse(widget.forecasts[index].startTime).toLocal();
             return Card(
               child: SizedBox(
                 width: 100,
@@ -25,7 +32,7 @@ class DailyForecastList extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Text("${forecasts[index].temperature}"),
+                    Text("${widget.forecasts[index].temperature}"),
                     const Icon(Icons.sunny),
                     Text(DateFormat("h a").format(forecastTime)),
                   ],
