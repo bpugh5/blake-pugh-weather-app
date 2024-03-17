@@ -52,11 +52,15 @@ class ForecastWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+<<<<<<< HEAD
       decoration: const BoxDecoration(
           gradient: LinearGradient(
               begin: Alignment.bottomLeft,
               end: Alignment.topRight,
               colors: [Colors.lightBlue, Colors.yellow])),
+=======
+      decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.bottomLeft, end: Alignment.topRight, colors: [Colors.lightBlue[200]!, Colors.yellow[200]!])),
+>>>>>>> 43945896de601f536b1c0b3494c4e1278c3b98bb
       child: Column(
         children: [
           ActiveWeatherCard(
@@ -141,6 +145,7 @@ class LocationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< HEAD
     return SizedBox(
       child: Column(
         children: [
@@ -155,6 +160,20 @@ class LocationWidget extends StatelessWidget {
               setLocation: widget.setLocation, getLocation: widget.getLocation),
         ],
       ),
+=======
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Center(
+              child: Text(
+                  "Please enter a valid location, or use your current location to get a forecast!",
+                  style: Theme.of(context).textTheme.bodyLarge)),
+        ),
+        Location(
+            setLocation: widget.setLocation, getLocation: widget.getLocation),
+      ],
+>>>>>>> 43945896de601f536b1c0b3494c4e1278c3b98bb
     );
   }
 }

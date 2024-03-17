@@ -17,8 +17,11 @@ final mainColorScheme = ColorScheme(
 );
 
 final customLightTheme = ThemeData(
+  // primaryTextTheme: GoogleFonts.golosTextTextTheme(),
   appBarTheme: AppBarTheme(
-    backgroundColor: mainColorScheme.primary
+    // iconTheme: const IconThemeData(color: Colors.white),
+    backgroundColor: mainColorScheme.primary,
+    titleTextStyle: TextStyle(color: mainColorScheme.onPrimary)
   ),
   colorScheme: mainColorScheme,
   textTheme: const TextTheme(
