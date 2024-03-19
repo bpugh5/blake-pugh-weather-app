@@ -231,6 +231,7 @@ Icon iconsMap(String description, bool isDayTime) {
     case "Thunderstorm Rain Small Hail/Snow Pellets":
     case "Light Thunderstorm Rain Small Hail/Snow Pellets":
     case "Heavy Thunderstorm Rain Small Hail/Snow Pellets":
+    case "Showers and Thunder":
       return const Icon(FontAwesomeIcons.cloudBolt, size: 40);
     case "Snow":
     case "Light Snow":

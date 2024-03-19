@@ -157,18 +157,19 @@ class _LocationState extends State<Location> {
       );
 
   Row listItemText(int index) => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 200,
-            child: FittedBox(
-              child: Text(
-                "${_locations.elementAt(index).city}, ${_locations.elementAt(index).state}, ${_locations.elementAt(index).zip}",
-                style: Theme.of(context).textTheme.labelSmall,
-              ),
+          Expanded(
+            child: Text(
+              "${_locations.elementAt(index).city}, ${_locations.elementAt(index).state}, ${_locations.elementAt(index).zip}",
+              style: Theme.of(context).textTheme.labelMedium,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
           (_editMode)
               ? IconButton(
+                  padding: const EdgeInsets.all(0),
                   onPressed: () {
                     deleteLocation(index);
                   },
