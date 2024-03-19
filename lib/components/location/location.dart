@@ -121,10 +121,11 @@ class _LocationState extends State<Location> {
 
   Column savedListColumn() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: 160, child: userInput()),
+        userInput(),
         savedLocation(),
-        SizedBox(height: 150, child: locationsListWidget()),
+        SizedBox(height: 200, child: locationsListWidget()),
       ],
     );
   }
@@ -133,7 +134,7 @@ class _LocationState extends State<Location> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text("Saved Locations:"),
+        Text("Saved Locations:", style: Theme.of(context).textTheme.labelLarge),
         IconButton(
           icon: const Icon(Icons.edit),
           onPressed: toggleEditMode,
@@ -143,13 +144,17 @@ class _LocationState extends State<Location> {
     );
   }
 
-  ListView locationsListWidget() => ListView.builder(
-      itemCount: _locations.length,
-      itemBuilder: (context, index) => ListTile(
-          title: SizedBox(height: 25, child: listItemText(index)),
-          onTap: () {
-            tapList(index);
-          }));
+  Card locationsListWidget() => Card(
+        color: Theme.of(context).colorScheme.onSurface,
+        child: ListView.builder(
+          itemCount: _locations.length,
+          itemBuilder: (context, index) => ListTile(
+              title: SizedBox(height: 25, child: listItemText(index)),
+              onTap: () {
+                tapList(index);
+              }),
+        ),
+      );
 
   Row listItemText(int index) => Row(
         children: [
@@ -157,7 +162,9 @@ class _LocationState extends State<Location> {
             width: 200,
             child: FittedBox(
               child: Text(
-                  "${_locations.elementAt(index).city}, ${_locations.elementAt(index).state}, ${_locations.elementAt(index).zip}"),
+                "${_locations.elementAt(index).city}, ${_locations.elementAt(index).state}, ${_locations.elementAt(index).zip}",
+                style: Theme.of(context).textTheme.labelSmall,
+              ),
             ),
           ),
           (_editMode)
@@ -177,15 +184,21 @@ class _LocationState extends State<Location> {
     return Column(
       children: [
         ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.onSurface),
           onPressed: addLocationGPSButtonPressed,
-          child: const SizedBox(
-            width: 140,
-            child: Row(
-              children: [
-                Text('Add GPS Location'),
-                Icon(Icons.location_on_outlined),
-              ],
-            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Add GPS Location',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    ?.copyWith(color: Colors.blue),
+              ),
+              const Icon(Icons.location_on_outlined, color: Colors.blue),
+            ],
           ),
         ),
         Row(
@@ -201,7 +214,13 @@ class _LocationState extends State<Location> {
         ),
         ElevatedButton(
           onPressed: addLocationButtonPressed,
-          child: const Text('Add Manual Location'),
+          style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.onSurface),
+          child: Text('Add Manual Location',
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyLarge
+                  ?.copyWith(color: Colors.blue)),
         ),
       ],
     );
@@ -231,12 +250,16 @@ class _LocationTextState extends State<LocationText> {
       child: SizedBox(
         width: widget.width,
         child: TextField(
-            controller: widget.controller,
-            style: const TextStyle(fontSize: 15.0, height: 1.0),
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
-              labelText: widget.labelText,
-            )),
+          controller: widget.controller,
+          style: TextStyle(
+              fontSize: 15.0,
+              height: 1.0,
+              color: Theme.of(context).colorScheme.onBackground),
+          decoration: InputDecoration(
+            border: const OutlineInputBorder(),
+            labelText: widget.labelText,
+          ),
+        ),
       ),
     );
   }

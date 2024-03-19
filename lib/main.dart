@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             title: 'CS 492 Weather App',
             theme: customLightTheme,
-            darkTheme: ThemeData.dark(),
+            darkTheme: customDarkTheme,
             themeMode: mode,
             home: MyHomePage(title: "CS492 Weather App", notifier: _notifier),
           );
@@ -42,10 +42,10 @@ class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title, required this.notifier});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MyHomePage> createState() => MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class MyHomePageState extends State<MyHomePage> {
   List<UserLocation> locations = [];
   List<WeatherForecast> _forecasts = [];
   List<WeatherForecast> _forecastsHourly = [];
@@ -67,8 +67,10 @@ class _MyHomePageState extends State<MyHomePage> {
   void _getForecasts() async {
     if (_location != null) {
       // We collect both the twice-daily forecasts and the hourly forecasts
-      List<WeatherForecast> forecasts = await getWeatherForecasts(_location!, false);
-      List<WeatherForecast> forecastsHourly = await getWeatherForecasts(_location!, true);
+      List<WeatherForecast> forecasts =
+          await getWeatherForecasts(_location!, false);
+      List<WeatherForecast> forecastsHourly =
+          await getWeatherForecasts(_location!, true);
       setState(() {
         _forecasts = forecasts;
         _forecastsHourly = forecastsHourly;
@@ -83,7 +85,6 @@ class _MyHomePageState extends State<MyHomePage> {
   List<WeatherForecast> getForecastsHourly() {
     return _forecastsHourly;
   }
-
 
   UserLocation? getLocation() {
     return _location;
@@ -159,8 +160,10 @@ class _MyHomePageState extends State<MyHomePage> {
           getForecasts: getForecasts,
           getForecastsHourly: getForecastsHourly,
           setLocation: setLocation),
-      endDrawer: Drawer(
-        child: settingsDrawer(),
+      endDrawer: SafeArea(
+        child: Drawer(
+          child: settingsDrawer(),
+        ),
       ),
     );
   }
@@ -171,8 +174,10 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(_light ? "Light Mode" : "Dark Mode",
-              style: Theme.of(context).textTheme.labelLarge),
+          Text(
+            _light ? "Light Mode" : "Dark Mode",
+            style: Theme.of(context).textTheme.labelLarge,
+          ),
           Transform.scale(
             scale: 0.5,
             child: Switch(
@@ -185,23 +190,33 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  SafeArea settingsDrawer() {
-    return SafeArea(
-      child: Column(
-        children: [
-          SettingsHeaderText(context: context, text: "Settings:"),
-          modeToggle(),
-          SettingsHeaderText(context: context, text: "My Locations:"),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Location(
-                setLocation: setLocation,
-                getLocation: getLocation,
-                closeEndDrawer: _closeEndDrawer),
-          ),
-          ElevatedButton(
-              onPressed: _closeEndDrawer, child: const Text("Close Settings"))
-        ],
+  Container settingsDrawer() {
+    return Container(
+      color: Theme.of(context).colorScheme.surface,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            SettingsHeaderText(context: context, text: "Settings:"),
+            modeToggle(),
+            SettingsHeaderText(context: context, text: "My Locations:"),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Location(
+                  setLocation: setLocation,
+                  getLocation: getLocation,
+                  closeEndDrawer: _closeEndDrawer),
+            ),
+            ElevatedButton(
+                onPressed: _closeEndDrawer,
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.onSurface),
+                child: Text("Close Settings",
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(color: Colors.blue)))
+          ],
+        ),
       ),
     );
   }
@@ -217,10 +232,7 @@ class SettingsHeaderText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(4.0),
-      child: Text(
-        text,
-        style: Theme.of(context).textTheme.headlineSmall,
-      ),
+      child: Text(text, style: Theme.of(context).textTheme.headlineSmall),
     );
   }
 }

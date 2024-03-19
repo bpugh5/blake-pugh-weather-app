@@ -2,6 +2,8 @@ import 'package:cs492_weather_app/components/widgets/active_weather_card.dart';
 import 'package:cs492_weather_app/components/widgets/daily_forecasts.dart';
 import 'package:cs492_weather_app/components/widgets/hourly_forecasts.dart';
 import 'package:cs492_weather_app/models/weather_forecast.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import '../../models/user_location.dart';
 import 'package:flutter/material.dart';
 import '../location/location.dart';
@@ -36,7 +38,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 }
 
-class ForecastWidget extends StatelessWidget {
+class ForecastWidget extends StatefulWidget {
   final UserLocation location;
   final List<WeatherForecast> forecasts;
   final List<WeatherForecast> forecastsHourly;
@@ -50,23 +52,79 @@ class ForecastWidget extends StatelessWidget {
       required this.forecasts});
 
   @override
+  State<ForecastWidget> createState() => _ForecastWidgetState();
+}
+
+class _ForecastWidgetState extends State<ForecastWidget> {
+  late WeatherForecast activeWeather;
+  int selectedHourlyIndex = 0;
+  int selectedDailyIndex = -1;
+
+  @override
+  void initState() {
+    super.initState();
+    updateActiveWeather(widget.forecastsHourly.elementAt(0));
+  }
+
+  void updateActiveWeather(WeatherForecast forecast) {
+    setState(() {
+      activeWeather = forecast;
+    });
+  }
+
+  // Need a function that will provide an int (index that was clicked, else -1)
+  // Calling it should require an index and a bool, true = hourly, false = daily
+  //
+  int getHourlyIndex() {
+    return selectedHourlyIndex;
+  }
+
+  int getDailyIndex() {
+    return selectedDailyIndex;
+  }
+
+  void setSelectedIndex(int index, bool isHourly) {
+    if (isHourly) {
+      setState(() {
+        selectedHourlyIndex = index;
+        selectedDailyIndex = -1;
+      });
+    } else {
+      setState(() {
+        selectedDailyIndex = index;
+        selectedHourlyIndex = -1;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.bottomLeft,
-              end: Alignment.topRight,
-              colors: [Colors.lightBlue, Colors.yellow])),
-      child: Column(
-        children: [
-          ActiveWeatherCard(
-              location: location, forecastsHourly: forecastsHourly),
-          const Text("Hourly Forecast: "),
-          HourlyForecastList(forecasts: forecastsHourly),
-          const Text("Daily Forecast: "),
-          DailyForecastList(forecasts: forecasts)
-        ],
-      ),
+    return Column(
+      children: [
+        ActiveWeatherCard(
+            location: widget.location, activeWeather: activeWeather),
+        Text("Hourly Forecast: ",
+            style: Theme.of(context).textTheme.headlineSmall),
+        HourlyForecastList(
+          forecasts: widget.forecastsHourly,
+          updateActiveWeather: updateActiveWeather,
+          getDailyIndex: getDailyIndex,
+          getHourlyIndex: getHourlyIndex,
+          setSelectedIndex: setSelectedIndex,
+        ),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+        Text("Daily Forecast: ",
+            style: Theme.of(context).textTheme.headlineSmall),
+        Expanded(
+          child: DailyForecastList(
+            forecasts: widget.forecasts,
+            updateActiveWeather: updateActiveWeather,
+            getHourlyIndex: getHourlyIndex,
+            getDailyIndex: getDailyIndex,
+            setSelectedIndex: setSelectedIndex,
+          ),
+        )
+      ],
     );
   }
 }
@@ -74,39 +132,31 @@ class ForecastWidget extends StatelessWidget {
 class DescriptionWidget extends StatelessWidget {
   const DescriptionWidget({
     super.key,
-    required this.forecasts,
+    required this.activeForecast,
   });
 
-  final List<WeatherForecast> forecasts;
+  final WeatherForecast activeForecast;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 25,
-      width: 500,
-      child: Center(
-          child: Text(forecasts.elementAt(0).shortForecast,
-              style: Theme.of(context).textTheme.bodyMedium)),
+      child: Text(
+        activeForecast.shortForecast,
+        style: Theme.of(context).textTheme.bodyMedium,
+      ),
     );
   }
 }
 
 class TemperatureWidget extends StatelessWidget {
-  const TemperatureWidget({
-    super.key,
-    required this.forecasts,
-  });
+  const TemperatureWidget({super.key, required this.activeForecast});
 
-  final List<WeatherForecast> forecasts;
+  final WeatherForecast activeForecast;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 500,
-      height: 60,
-      child: Text('${forecasts.elementAt(0).temperature}º',
-          style: Theme.of(context).textTheme.displayLarge),
-    );
+    return Text('${activeForecast.temperature}º',
+        style: Theme.of(context).textTheme.displayLarge);
   }
 }
 
@@ -120,13 +170,17 @@ class LocationTextWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(4.0),
-      child: SizedBox(
-        width: 500,
-        child: Text("${location.city}, ${location.state}, ${location.zip}",
-            style: Theme.of(context).textTheme.headlineSmall),
-      ),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Expanded(
+          child: Text(
+            "${location.city}, ${location.state}, ${location.zip}",
+            style: Theme.of(context).textTheme.bodyLarge,
+            softWrap: true,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -141,18 +195,23 @@ class LocationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Center(
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
               child: Text(
-                  "Please enter a valid location, or use your current location to get a forecast!",
-                  style: Theme.of(context).textTheme.bodyLarge)),
-        ),
-        Location(
-            setLocation: widget.setLocation, getLocation: widget.getLocation),
-      ],
+                "Please enter a valid location, or use your current location to get a forecast!",
+                style: Theme.of(context).textTheme.bodyLarge,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+          Location(
+              setLocation: widget.setLocation, getLocation: widget.getLocation),
+        ],
+      ),
     );
   }
 }
